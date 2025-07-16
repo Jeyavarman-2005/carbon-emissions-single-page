@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  padding: 2rem;
+  background-color: #f5f7fa;
+}
+
+.successCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.successIcon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  font-family: 'Montserrat', sans-serif;
+  height: 80px;
+  background-color: #4BB543;
+  color: white;
+  border-radius: 50%;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.successTitle {
+  color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.successMessage {
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.6;
+}
+
+.backButton {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.backButton:hover {
+  background-color: #2980b9;
+}
+
+@media (max-width: 600px) {
+  .successCard {
+    padding: 1.5rem;
+  }
+  
+  .successIcon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  margin-bottom: 1rem;
+  }
+  
+  .successTitle {
+    font-size: 1.5rem;
+  }
+}

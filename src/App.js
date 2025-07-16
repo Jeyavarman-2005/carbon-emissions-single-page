@@ -1,24 +1,24 @@
-import logo from './logo.svg';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoadingSpinner from './components/LoadingSpinner';
 import './App.css';
+
+// Lazy load pages
+const CarbonFootprintPage = lazy(() => import('./pages/CarbonFootprintPage'));
+const SuccessPage = lazy(() => import('./pages/SuccessPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/" element={<CarbonFootprintPage />} />
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 
