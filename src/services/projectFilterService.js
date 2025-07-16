@@ -72,7 +72,7 @@ function formatProject(project, index) {
   const formatted = {
     id: index,
     name: project['Project Information in details'] || project.Project || '--',
-    reduction: (project['Estimated Carbon Reduction in Kg/CO2 per annum'] || 0),
+    reduction: Math.round(project['Estimated Carbon Reduction in Kg/CO2 per annum'] || 0),
     investment: project['Estimated Investment in Rs.']?.toLocaleString() || '--',
     TimeTaken: project['Estimated Timeline in months'] || project['Estimated Timeline'] || '--',
     category: project.Category || '--',
