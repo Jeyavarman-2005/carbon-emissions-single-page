@@ -55,7 +55,7 @@ const EmissionsChart = React.memo(({ data, loading }) => {
     <ResponsiveContainer width="100%" height="90%">
       <ComposedChart
         data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+        margin={{ top: 20, right: 30, left:50, bottom: 20 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
         <XAxis 
@@ -71,7 +71,9 @@ const EmissionsChart = React.memo(({ data, loading }) => {
             position: 'insideLeft',
             fill: '#6B7280',
             fontWeight:"bold",
-            dy: 100
+            dx : -47.5,
+            dy: 90
+        
           }}
           tick={{ fill: '#6B7280' }}
           axisLine={{ stroke: '#E5E7EB' }}
@@ -1044,10 +1046,6 @@ const chartData = useMemo(() => {
           <div className={styles.legendItem}>
             <span className={styles.legendColor + ' ' + styles.scope2}></span>
             <span>Scope 2</span>
-          </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor + ' ' + styles.target}></span>
-            <span>Reduction Target</span>
           </div>
         </div>
       </div>
