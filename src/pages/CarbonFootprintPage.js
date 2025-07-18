@@ -55,7 +55,7 @@ const EmissionsChart = React.memo(({ data, loading }) => {
     <ResponsiveContainer width="100%" height="90%">
       <ComposedChart
         data={data}
-        margin={{ top: 20, right: 30, left:50, bottom: 20 }}
+        margin={{ top: 20, right: 30, left:52.5, bottom: 20 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
         <XAxis 
@@ -77,18 +77,6 @@ const EmissionsChart = React.memo(({ data, loading }) => {
           }}
           tick={{ fill: '#6B7280' }}
           axisLine={{ stroke: '#E5E7EB' }}
-        />
-        <Tooltip 
-          formatter={(value, name) => {
-            if (name === 'targetValue') return [`${value} tons`, 'Reduction Target'];
-            return [`${value} tons`, name];
-          }}
-          contentStyle={{
-            backgroundColor: '#fff',
-            border: '1px solid #E5E7EB',
-            borderRadius: '6px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-          }}
         />
         <Bar 
           dataKey="scope1" 
@@ -146,27 +134,6 @@ const EmissionsChart = React.memo(({ data, loading }) => {
             }}
           />
         </Bar>
-        <Line
-          type="monotone"
-          dataKey="targetValue"
-          stroke="#EF4444"
-          strokeWidth={2}
-          dot={{ r: 4, fill: '#EF4444' }}
-          activeDot={{ r: 6, stroke: '#EF4444', strokeWidth: 2, fill: '#fff' }}
-          name="Reduction Target"
-        />
-        {data.map((entry, index) => (
-          entry.reduction && (
-            <Label
-              key={`reduction-label-${index}`}
-              value={`Reduction: ${entry.reduction.toFixed(2)} kg`}
-              position="top"
-              offset={10}
-              fill="#EF4444"
-              fontWeight="bold"
-            />
-          )
-        ))}
       </ComposedChart>
     </ResponsiveContainer>
   );
