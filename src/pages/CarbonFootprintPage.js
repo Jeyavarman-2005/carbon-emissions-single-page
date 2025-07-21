@@ -13,7 +13,6 @@ import Footer from '../components/Footer';
 import styles from './CarbonFootprintPage.module.css';
 import supabase from '../services/supabase';
 import * as XLSX from 'xlsx';
-import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
 
@@ -239,8 +238,13 @@ const CarbonFootprintPage = () => {
       
       sheet1Data.slice(1).forEach(row => {
         const parameter = row[0];
+        // Create consistent keys by removing spaces and special characters
+        const paramKey = parameter.toLowerCase()
+          .replace(/[^a-z0-9]/g, '')
+          .replace('ins', ''); // Remove 'in' from keys like 'scope1inkgs'
+        
         years.forEach((year, index) => {
-          emissionsData[`${parameter.toLowerCase().replace(' ', '')}_${year}`] = row[index + 1] || 0;
+          emissionsData[`${paramKey}_${year}`] = row[index + 1] || 0;
         });
       });
       
@@ -359,107 +363,29 @@ const CarbonFootprintPage = () => {
   };
 
 const downloadTemplate = async () => {
-  const workbook = new ExcelJS.Workbook();
-
-  // Sheet1: Emissions
-  const sheet1 = workbook.addWorksheet('Emissions');
-  const sheet1Data = [
-    ['Parameter', 2025, 2026, 2027, 2028, 2029, 2030],
-    ['Scope 1 in Kgs', '', '', '', '', '', ''],
-    ['Scope 2 in Kgs', '', '', '', '', '', ''],
-    ['Solar in Percentage(%)', '', '', '', '', '', ''],
-    ['Wind in Percentage(%)', '', '', '', '', '', ''],
-    ['Others in Percentage(%)', '', '', '', '', '', '']
-  ];
-  sheet1Data.forEach(row => sheet1.addRow(row));
-
-  sheet1.columns = [
-  { width: 20 }, // 👈 Give breathing space to first column
-  { width: 15 },
-  { width: 15 },
-  { width: 15 },
-  { width: 15 },
-  { width: 15 },
-  { width: 15 },
-];
-  // Lock all cells first
-  sheet1.eachRow(row => {
-    row.eachCell(cell => {
-      cell.protection = { locked: true };
-    });
-  });
-
-  // Unlock cells except first row and first column
-  sheet1.eachRow((row, rowIndex) => {
-    row.eachCell((cell, colIndex) => {
-      if (rowIndex > 1 && colIndex > 1) {
-        cell.protection = { locked: false };
-      }
-    });
-  });
-
-  await sheet1.protect('1234', {
-    selectLockedCells: true,
-    selectUnlockedCells: true,
-  });
-
-  // Sheet2: Projects
-  const sheet2 = workbook.addWorksheet('Projects');
-
-// 👇 This defines the header row AND sets column widths
-sheet2.columns = [
-  { header: '#', width: 6 },
-  { header: 'Category', width: 20 },
-  { header: 'Approach', width: 20 },
-  { header: 'Project Information in details', width: 40 },
-  { header: 'Estimated Carbon Reduction in Kg/CO2 per annum', width: 35 },
-  { header: 'Estimated Investment in Rs.', width: 25 },
-  { header: 'Estimated Timeline in months', width: 25 },
-  { header: 'Payback period in months', width: 25 },
-];
-
-// 🔥 Don't add this — it causes duplicate headers
-// sheet2.addRow(sheet2Headers);
-
-// ✅ Now add 2000 editable rows
-for (let i = 0; i < 2000; i++) {
-  sheet2.addRow(['', '', '', '', '', '', '', '']);
-}
-
-// Lock all cells
-sheet2.eachRow(row => {
-  row.eachCell(cell => {
-    cell.protection = { locked: true };
-  });
-});
-
-// Unlock all rows except first
-sheet2.eachRow((row, rowIndex) => {
-  if (rowIndex > 1) {
-    row.eachCell(cell => {
-      cell.protection = { locked: false };
-    });
-  }
-});
-
-// Protect sheet
-await sheet2.protect('1234', {
-  selectLockedCells: true,
-  selectUnlockedCells: true,
-});
-
-
-  const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(blob, 'Carbon_Footprint_Template.xlsx');
-};
-
-
-
-  const handleExcelDownload = async (
-
-
+  try {
+    // Path to your pre-made template in the public folder
+    const templatePath = '/Carbon_Footprint_Template.xlsx';
     
+    // Fetch the template file
+    const response = await fetch(templatePath);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch template');
+    }
+    
+    // Get the file as a blob
+    const blob = await response.blob();
+    
+    // Download the file
+    saveAs(blob, 'Carbon_Footprint_Template.xlsx');
+  } catch (error) {
+    console.error('Error downloading template:', error);
+    // Fallback: You might want to generate the template programmatically here
+    // or show an error message to the user
+  }
+};
+  const handleExcelDownload = async (
     response,
     setAllProjects,
     setFilteredProjects,
