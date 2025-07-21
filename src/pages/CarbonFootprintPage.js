@@ -13,6 +13,7 @@ import Footer from '../components/Footer';
 import styles from './CarbonFootprintPage.module.css';
 import supabase from '../services/supabase';
 import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
 
@@ -357,44 +358,108 @@ const CarbonFootprintPage = () => {
     }
   };
 
-  // Download template
-  const downloadTemplate = () => {
-    // Create workbook with two sheets
-    const wb = XLSX.utils.book_new();
-    
-    // Sheet1 data
-    const sheet1Data = [
-      ['Parameter', 2025, 2026, 2027, 2028, 2029, 2030],
-      ['scope 1', '', '', '', '', '', ''],
-      ['scope 2', '', '', '', '', '', ''],
-      ['solar', '', '', '', '', '', ''],
-      ['wind', '', '', '', '', '', ''],
-      ['others', '', '', '', '', '', '']
-    ];
-    
-    const ws1 = XLSX.utils.aoa_to_sheet(sheet1Data);
-    XLSX.utils.book_append_sheet(wb, ws1, "Emissions");
-    
-    // Sheet2 data
-    const sheet2Data = [
-      ['#', 'Category', 'Approach', 'Project Information in details', 
-       'Estimated Carbon Reduction in Kg/CO2 per annum', 
-       'Estimated Investment in Rs.', 
-       'Estimated Timeline in months', 
-       'Payback period in months']
-    ];
-    
-    const ws2 = XLSX.utils.aoa_to_sheet(sheet2Data);
-    XLSX.utils.book_append_sheet(wb, ws2, "Projects");
-    
-    // Export file
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([wbout], { type: 'application/octet-stream' });
-    saveAs(blob, 'Carbon_Footprint_Template.xlsx');
-  };
+const downloadTemplate = async () => {
+  const workbook = new ExcelJS.Workbook();
+
+  // Sheet1: Emissions
+  const sheet1 = workbook.addWorksheet('Emissions');
+  const sheet1Data = [
+    ['Parameter', 2025, 2026, 2027, 2028, 2029, 2030],
+    ['Scope 1 in Kgs', '', '', '', '', '', ''],
+    ['Scope 2 in Kgs', '', '', '', '', '', ''],
+    ['Solar in Percentage(%)', '', '', '', '', '', ''],
+    ['Wind in Percentage(%)', '', '', '', '', '', ''],
+    ['Others in Percentage(%)', '', '', '', '', '', '']
+  ];
+  sheet1Data.forEach(row => sheet1.addRow(row));
+
+  sheet1.columns = [
+  { width: 20 }, // 👈 Give breathing space to first column
+  { width: 15 },
+  { width: 15 },
+  { width: 15 },
+  { width: 15 },
+  { width: 15 },
+  { width: 15 },
+];
+  // Lock all cells first
+  sheet1.eachRow(row => {
+    row.eachCell(cell => {
+      cell.protection = { locked: true };
+    });
+  });
+
+  // Unlock cells except first row and first column
+  sheet1.eachRow((row, rowIndex) => {
+    row.eachCell((cell, colIndex) => {
+      if (rowIndex > 1 && colIndex > 1) {
+        cell.protection = { locked: false };
+      }
+    });
+  });
+
+  await sheet1.protect('1234', {
+    selectLockedCells: true,
+    selectUnlockedCells: true,
+  });
+
+  // Sheet2: Projects
+  const sheet2 = workbook.addWorksheet('Projects');
+
+// 👇 This defines the header row AND sets column widths
+sheet2.columns = [
+  { header: '#', width: 6 },
+  { header: 'Category', width: 20 },
+  { header: 'Approach', width: 20 },
+  { header: 'Project Information in details', width: 40 },
+  { header: 'Estimated Carbon Reduction in Kg/CO2 per annum', width: 35 },
+  { header: 'Estimated Investment in Rs.', width: 25 },
+  { header: 'Estimated Timeline in months', width: 25 },
+  { header: 'Payback period in months', width: 25 },
+];
+
+// 🔥 Don't add this — it causes duplicate headers
+// sheet2.addRow(sheet2Headers);
+
+// ✅ Now add 2000 editable rows
+for (let i = 0; i < 2000; i++) {
+  sheet2.addRow(['', '', '', '', '', '', '', '']);
+}
+
+// Lock all cells
+sheet2.eachRow(row => {
+  row.eachCell(cell => {
+    cell.protection = { locked: true };
+  });
+});
+
+// Unlock all rows except first
+sheet2.eachRow((row, rowIndex) => {
+  if (rowIndex > 1) {
+    row.eachCell(cell => {
+      cell.protection = { locked: false };
+    });
+  }
+});
+
+// Protect sheet
+await sheet2.protect('1234', {
+  selectLockedCells: true,
+  selectUnlockedCells: true,
+});
+
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  saveAs(blob, 'Carbon_Footprint_Template.xlsx');
+};
+
 
 
   const handleExcelDownload = async (
+
+
+    
     response,
     setAllProjects,
     setFilteredProjects,
