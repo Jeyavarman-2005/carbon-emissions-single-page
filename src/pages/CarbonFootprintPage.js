@@ -422,8 +422,8 @@ const downloadTemplate = async () => {
           parseFloat(project['Estimated Carbon Reduction in Kg/CO2 per annum'] || 0),
         'Estimated Investment in Rs.': 
           parseFloat(project['Estimated Investment in Rs.'] || 0),
-        'Estimated Timeline in months': 
-          parseFloat(project['Estimated Timeline in months'] || 0)
+        'Lead time for implementation in Months': 
+          parseFloat(project['Lead time for implementation in Months'] || 0)
       }));
 
       setAllProjects(formattedProjects);
@@ -439,7 +439,7 @@ const downloadTemplate = async () => {
           name: p['Project Information in details'] || '--',
           reduction: (p['Estimated Carbon Reduction in Kg/CO2 per annum'] || 0).toFixed(2),
           investment: (p['Estimated Investment in Rs.'] || 0).toLocaleString(),
-          TimeTaken: (p['Estimated Timeline in months'] || 0).toString()
+          TimeTaken: (p['Lead time for implementation in Months'] || 0).toString()
         }));
       
       setTopProjects(initialTop5);
@@ -735,7 +735,7 @@ const chartData = useMemo(() => {
           'Approach': p.Approach,
           'Carbon Reduction (Kg)': (p['Estimated Carbon Reduction in Kg/CO2 per annum']),
           'Investment (Rs.)': p['Estimated Investment in Rs.'],
-          'Timeline': p['Estimated Timeline in months']
+          'Timeline': p['Lead time for implementation in Months'],
         }))
       );
       XLSX.utils.book_append_sheet(wb, ws, "Filtered Projects");
