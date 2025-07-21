@@ -74,7 +74,7 @@ function formatProject(project, index) {
     name: project['Project Information in details'] || project.Project || '--',
     reduction: Math.round(project['Estimated Carbon Reduction in Kg/CO2 per annum'] || 0),
     investment: project['Estimated Investment in Rs.']?.toLocaleString() || '--',
-    TimeTaken: project['Estimated Timeline in months'] || project['Estimated Timeline'] || '--',
+    TimeTaken: project['Lead time for implementation in Months'] || project['Estimated Timeline'] || '--',
     category: project.Category || '--',
     approach: project.Approach || '--'
   };

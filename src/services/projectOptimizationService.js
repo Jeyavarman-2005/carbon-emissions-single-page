@@ -6,7 +6,7 @@ export function optimizeProjects(projects, constraints) {
 
   // Filter feasible projects first
   const feasibleProjects = projects.filter(project => 
-    (project['Estimated Timeline in months'] || 0) <= maxProjectTimeline
+    (project['Lead time for implementation in Months'] || 0) <= maxProjectTimeline
   );
 
   // Determine optimization approach based on constraints
@@ -45,7 +45,7 @@ function greedyOptimizeWithCarbon(projects, minCarbonKg, maxInvestment) {
     selectedProjects.push(project);
     totalInvestment += projectCost;
     totalCarbon += project['Estimated Carbon Reduction in Kg/CO2 per annum'] || 0;
-    maxTime = Math.max(maxTime, project['Estimated Timeline in months'] || 0);
+    maxTime = Math.max(maxTime, project['Lead time for implementation in Months'] || 0);
     
     if (totalCarbon >= minCarbonKg) break;
   }
@@ -79,7 +79,7 @@ function optimizeForInvestmentOnly(projects, maxInvestment) {
     selectedProjects.push(project);
     totalInvestment += projectCost;
     totalCarbon += project['Estimated Carbon Reduction in Kg/CO2 per annum'] || 0;
-    maxTime = Math.max(maxTime, project['Estimated Timeline in months'] || 0);
+    maxTime = Math.max(maxTime, project['Lead time for implementation in Months'] || 0);
   }
 
   return {
@@ -120,7 +120,7 @@ function dynamicProgrammingOptimize(projects, minCarbonKg, maxInvestment) {
     selectedProjects: best.selected || [],
     totalInvestment: best.selected?.reduce((sum, p) => sum + (p['Estimated Investment in Rs.'] || 0), 0) || 0,
     totalCarbonReduction: best.carbon,
-    maxProjectTimeline: best.selected?.reduce((max, p) => Math.max(max, p['Estimated Timeline in months'] || 0), 0) || 0
+    maxProjectTimeline: best.selected?.reduce((max, p) => Math.max(max, p['Lead time for implementation in Months'] || 0), 0) || 0
   };
 }
 
